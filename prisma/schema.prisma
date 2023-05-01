@@ -11,6 +11,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id             String        @id @default(cuid())
+  name           String
+  email          String        @unique
+  password       String
+  role           Role?         @default(USER)
+  profilePicture String?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  organisationId String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([organisationId])
+}
+
 model Organisation {
   id           String         @id @default(cuid())
   name         String
@@ -20,21 +40,6 @@ model Organisation {
   updatedAt    DateTime       @updatedAt
   Invite       Invite[]
   AudioSection AudioSection[]
-}
-
-model User {
-  id             String        @id @default(cuid())
-  name           String
-  email          String        @unique
-  password       String
-  role           String
-  profilePicture String?
-  organisation   Organisation? @relation(fields: [organisationId], references: [id])
-  organisationId String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-
-  @@index([organisationId])
 }
 
 model AudioGuide {
