@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 const JWT_SECRET = "your_jwt_secret_here"; // Replace this with your own secret
 
 export const authRouter = createTRPCRouter({
-  createUser: publicProcedure
+  signUp: publicProcedure
     .input(
       z.object({
         email: z.string().email(),
@@ -46,7 +46,7 @@ export const authRouter = createTRPCRouter({
         expiresIn: "1d",
       });
 
-      return { success: true, token };
+      return { status: 201, token };
     }),
 
   loginUser: publicProcedure
