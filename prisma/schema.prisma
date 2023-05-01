@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -11,8 +11,71 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Organisation {
+  id           String         @id @default(cuid())
+  name         String
+  users        User[]
+  audioGuides  AudioGuide[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Invite       Invite[]
+  AudioSection AudioSection[]
+}
+
+model User {
+  id             String        @id @default(cuid())
+  name           String
+  email          String        @unique
+  password       String
+  role           String
+  profilePicture String?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  organisationId String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([organisationId])
+}
+
+model AudioGuide {
+  id             String         @id @default(cuid())
+  title          String
+  description    String?
+  audioSections  AudioSection[]
+  organisation   Organisation   @relation(fields: [organisationId], references: [id])
+  organisationId String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([organisationId])
+}
+
+model AudioSection {
+  id             String       @id @default(cuid())
+  title          String
+  description    String?
+  audioFile      String
+  audioGuide     AudioGuide   @relation(fields: [audioGuideId], references: [id])
+  audioGuideId   String
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisationId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([audioGuideId])
+  @@index([organisationId])
+}
+
+model Invite {
+  id             String       @id @default(cuid())
+  email          String
+  organisation   Organisation @relation(fields: [organisationId], references: [id])
+  organisationId String
+  role           String
+  token          String       @unique
+  expiry         DateTime
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organisationId])
 }
