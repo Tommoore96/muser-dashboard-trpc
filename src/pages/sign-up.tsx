@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -22,6 +23,7 @@ const SignUp: NextPage = () => {
       if (result.status === 201) {
         void router.push("/");
       }
+      return;
     },
     [mutateAsync, router]
   );
@@ -61,10 +63,11 @@ const SignUp: NextPage = () => {
                 {...register("password")}
               />
               <div className="flex items-center justify-between">
-                <Link href="/">
-                  <a className="cursor-pointer text-blue-600 hover:underline">
-                    Go to login
-                  </a>
+                <Link
+                  href="/"
+                  className="cursor-pointer text-blue-600 hover:underline"
+                >
+                  Go to login
                 </Link>
                 <button
                   className="rounded bg-blue-600 px-4 py-2 text-white shadow"
