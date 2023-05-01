@@ -27,6 +27,7 @@ model User {
   organisationId String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+  Session        Session[]
 
   @@index([organisationId])
 }
@@ -83,4 +84,14 @@ model Invite {
   updatedAt      DateTime     @updatedAt
 
   @@index([organisationId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
